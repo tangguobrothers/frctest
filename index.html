@@ -23,7 +23,7 @@
 
         // === 辦公室位置設定 ===
         const OFFICE_LAT = 23.107699; // 修改為辦公室緯度
-        const OFFICE_LNG = 170.292136; // 修改為辦公室經度
+        const OFFICE_LNG = 120.292136; // 修改為辦公室經度
         const ALLOWED_DISTANCE = 0.15; // 允許距離 (公里)，0.1 代表 100 公尺
 
         // 計算兩個座標之間的距離 (Haversine formula)
@@ -57,7 +57,7 @@
                     } else {
                         // 不在範圍內
                         document.getElementById('icon').style.display = 'none';
-                        document.getElementById('status').innerHTML = `<span class="error">❌ 簽到失敗</span><br>您目前不在工作室範圍內<br>(距離約 ${(distance * 1000).toFixed(0)} 公尺)`;
+                        document.getElementById('status').innerHTML = `<span class="error">❌ 簽到失敗</span><br>您目前不在工作室範圍內`;
                     }
                 }, (err) => {
                     document.getElementById('icon').style.display = 'none';
@@ -91,6 +91,7 @@
     </script>
 </body>
 </html>
+
 
 
 
