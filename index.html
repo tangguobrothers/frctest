@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC 簽到</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; background: #f0f2f5; }
+        .btn { padding: 15px 30px; background: #00B900; color: white; border-radius: 25px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h2>智能 NFC 簽到系統</h2>
+    <div id="msg">身分辨識中...</div>
+
+    <script>
+        const LIFF_ID = '2008914307-JOMdlPxS'; // 貼入第二階段的 ID
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw76o0VId7x1RsXnoNKRm68rD0hAzCubL3teoKGSWVUgq-pVcuhlSk5PHWtFGxNM9c3-A/exec'; // 貼入第一階段的網址
+
+        async function init() {
+            await liff.init({ liffId: LIFF_ID });
+            if (!liff.isLoggedIn()) {
+                liff.login();
+            } else {
+                const profile = await liff.getProfile();
+                const params = new URLSearchParams(window.location.search);
+                const key = params.get('key');
+
+                if (!key) {
+                    document.getElementById('msg').innerText = "❌ 無法讀取標籤參數";
+                    return;
+                }
+
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        userId: profile.userId,
+                        userName: profile.displayName,
+                        tagKey: key
+                    })
+                }).then(() => {
+                    document.getElementById('msg').innerHTML = "<h3>✅ 簽到成功！</h3>";
+                    setTimeout(() => liff.closeWindow(), 2000);
+                });
+            }
+        }
+        init();
+    </script>
+</body>
+</html>
