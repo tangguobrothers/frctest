@@ -6,50 +6,87 @@
     <title>FRC6998簽到系統</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        body { font-family: -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; }
+        body { font-family: -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; text-align: center; padding: 20px; }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #00B900; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #status { margin-top: 20px; color: #333; font-weight: 500; }
+        #status { margin-top: 20px; color: #333; font-weight: 500; line-height: 1.5; }
+        .error { color: #d93025; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="loader"></div>
-    <div id="status">簽到身分辨識中...</div>
+    <div id="icon" class="loader"></div>
+    <div id="status">正在驗證您的位置...</div>
 
     <script>
         const LIFF_ID = '2008914307-JOMdlPxS'; 
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzdk-S-92ncygymZUBqNmcjZkdSovCf1Wm9UTsgrY4qqQGSJvC-jvKPMP3UrJ8k6ha1_w/exec'; 
+
+        // === 辦公室位置設定 ===
+        const OFFICE_LAT = 23.107453; // 修改為辦公室緯度
+        const OFFICE_LNG = 120.290778; // 修改為辦公室經度
+        const ALLOWED_DISTANCE = 1; // 允許距離 (公里)，0.1 代表 100 公尺
+
+        // 計算兩個座標之間的距離 (Haversine formula)
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // 地球半徑 (km)
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
 
         async function main() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
                     liff.login();
-                } else {
-                    const profile = await liff.getProfile();
-                    
-                    document.getElementById('status').innerText = "正在記錄簽到時間...";
-
-                    // 發送 POST 到 GAS (不再傳送 tagKey)
-                    fetch(GAS_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify({
-                            userId: profile.userId,
-                            userName: profile.displayName
-                        })
-                    }).then(() => {
-                        document.getElementById('status').innerHTML = "<h2 style='color: #00B900;'>✅ 簽到完成</h2>";
-                        // 1.2 秒後自動關閉視窗
-                        setTimeout(() => { liff.closeWindow(); }, 1200);
-                    }).catch(err => {
-                        document.getElementById('status').innerText = "系統忙碌中，請稍後再試";
-                    });
+                    return;
                 }
+
+                // 請求地理位置
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    const distance = getDistance(userLat, userLng, OFFICE_LAT, OFFICE_LNG);
+
+                    if (distance <= ALLOWED_DISTANCE) {
+                        // 在範圍內，執行簽到
+                        submitCheckIn();
+                    } else {
+                        // 不在範圍內
+                        document.getElementById('icon').style.display = 'none';
+                        document.getElementById('status').innerHTML = `<span class="error">❌ 簽到失敗</span><br>您目前不在工作室範圍內<br>(距離約 ${(distance * 1000).toFixed(0)} 公尺)`;
+                    }
+                }, (err) => {
+                    document.getElementById('icon').style.display = 'none';
+                    document.getElementById('status').innerHTML = `<span class="error">❌ 無法取得位置</span><br>請開啟 GPS 權限後再試一次`;
+                }, { enableHighAccuracy: true });
+
             } catch (err) {
                 document.getElementById('status').innerText = "初始化失敗: " + err;
             }
         }
+
+        async function submitCheckIn() {
+            const profile = await liff.getProfile();
+            document.getElementById('status').innerText = "位置驗證成功，正在簽到...";
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    userId: profile.userId,
+                    userName: profile.displayName
+                })
+            }).then(() => {
+                document.getElementById('icon').style.display = 'none';
+                document.getElementById('status').innerHTML = "<h2 style='color: #00B900;'>✅ 簽到成功</h2>";
+                setTimeout(() => { liff.closeWindow(); }, 1500);
+            });
+        }
+
         main();
     </script>
 </body>
