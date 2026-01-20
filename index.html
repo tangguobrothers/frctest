@@ -5,86 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FRC6998 簽到系統</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <style>
-        body { font-family: -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; text-align: center; padding: 20px; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #00B900; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #status { margin-top: 20px; color: #333; font-weight: 500; font-size: 1.1em; line-height: 1.6; }
-        .error { color: #d93025; font-weight: bold; }
-        .success { color: #27ae60; font-weight: bold; }
-    </style>
-</head>
+    <link rel="stylesheet" href="style.css"> </head>
 <body>
-    <div id="icon" class="loader"></div>
-    <div id="status">正在驗證身分與位置...</div>
-
-    <script>
-        // 設定區 (稍後建議手動混淆此段)
-        const CONFIG = {
-            LIFF_ID: '2008914307-JOMdlPxS',
-            GAS_URL: 'https://script.google.com/macros/s/AKfycby7wWMBYfR7NcFK6l1pfcj3fmeMUkMuAIy6GM7rd6YNGB_Rh4wkYvaCxmW6RBx4qIdmqA/exec', 
-            TOKEN: 'FRC6998_SECURE_TOKEN_2026'
-        };
-
-        async function submitCheckIn(lat, lng) {
-            try {
-                const profile = await liff.getProfile();
-                
-                // 傳送包含 Token, userId, 座標的完整資料包
-                fetch(CONFIG.GAS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({
-                        token: CONFIG.TOKEN,
-                        userId: profile.userId,
-                        userName: profile.displayName,
-                        lat: lat,
-                        lng: lng
-                    })
-                }).then(() => {
-                    document.getElementById('icon').style.display = 'none';
-                    document.getElementById('status').innerHTML = `
-                        <h2 class="success">✅ 資料已送出</h2>
-                        <p>系統正在核對身分與位置...<br>若符合資格，紀錄將出現在表格中。</p>
-                    `;
-                    setTimeout(() => { liff.closeWindow(); }, 2500);
-                });
-            } catch (err) {
-                showError("通訊失敗，請檢查網路連線");
-            }
-        }
-
-        async function main() {
-            try {
-                await liff.init({ liffId: CONFIG.LIFF_ID });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                    return;
-                }
-
-                // 請求高精度位置
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-                    
-                    document.getElementById('status').innerText = "驗證成功，正在紀錄考勤...";
-                    await submitCheckIn(lat, lng);
-                }, (err) => {
-                    showError("簽到失敗：必須開啟 GPS 定位權限");
-                }, { enableHighAccuracy: true, timeout: 10000 });
-
-            } catch (err) {
-                showError("系統載入錯誤：" + err);
-            }
-        }
-
-        function showError(msg) {
-            document.getElementById('icon').style.display = 'none';
-            document.getElementById('status').innerHTML = `<span class="error">❌ ${msg}</span>`;
-        }
-
-        main();
-    </script>
+    <div id="app">
+        <div id="icon" class="loader"></div>
+        <div id="status">正在載入系統模組...</div>
+    </div>
+    <script src="checkin.js"></script>
 </body>
 </html>
-
