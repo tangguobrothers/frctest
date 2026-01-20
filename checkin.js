@@ -1,1 +1,41 @@
-function _0x2a74(_0x38b474,_0x502be8){_0x38b474=_0x38b474-0x160;const _0x28a6fe=_0x28a6();let _0x2a74ad=_0x28a6fe[_0x38b474];return _0x2a74ad;}const _0xa1ad31=_0x2a74;(function(_0x1d3d1d,_0x2beee6){const _0x12dc42=_0x2a74,_0x1cbdfe=_0x1d3d1d();while(!![]){try{const _0x3379b9=parseInt(_0x12dc42(0x161))/0x1+parseInt(_0x12dc42(0x170))/0x2+parseInt(_0x12dc42(0x16f))/0x3+-parseInt(_0x12dc42(0x181))/0x4+-parseInt(_0x12dc42(0x163))/0x5*(-parseInt(_0x12dc42(0x183))/0x6)+parseInt(_0x12dc42(0x184))/0x7*(parseInt(_0x12dc42(0x169))/0x8)+parseInt(_0x12dc42(0x160))/0x9*(-parseInt(_0x12dc42(0x186))/0xa);if(_0x3379b9===_0x2beee6)break;else _0x1cbdfe['push'](_0x1cbdfe['shift']());}catch(_0xd00f82){_0x1cbdfe['push'](_0x1cbdfe['shift']());}}}(_0x28a6,0xb8891));const CONFIG={'LIFF_ID':_0xa1ad31(0x17b),'GAS_URL':_0xa1ad31(0x17c),'TOKEN':_0xa1ad31(0x175)};async function main(){const _0x2a94a4=_0xa1ad31;try{await liff[_0x2a94a4(0x165)]({'liffId':CONFIG[_0x2a94a4(0x167)]});if(!liff[_0x2a94a4(0x178)]()){liff[_0x2a94a4(0x166)]();return;}navigator['geolocation'][_0x2a94a4(0x187)](async _0x564f86=>{const _0x130d43=_0x2a94a4,_0x57836b=await liff[_0x130d43(0x164)]();document['getElementById'](_0x130d43(0x16a))[_0x130d43(0x174)]=_0x130d43(0x16c),fetch(CONFIG[_0x130d43(0x17f)],{'method':_0x130d43(0x16e),'mode':_0x130d43(0x17d),'body':JSON[_0x130d43(0x162)]({'token':CONFIG[_0x130d43(0x180)],'userId':_0x57836b[_0x130d43(0x17a)],'userName':_0x57836b[_0x130d43(0x185)],'lat':_0x564f86[_0x130d43(0x16b)][_0x130d43(0x188)],'lng':_0x564f86['coords'][_0x130d43(0x172)]})})[_0x130d43(0x173)](()=>{const _0x138a88=_0x130d43;document['getElementById'](_0x138a88(0x16d))['style'][_0x138a88(0x171)]=_0x138a88(0x17e),document[_0x138a88(0x168)](_0x138a88(0x16a))[_0x138a88(0x179)]=_0x138a88(0x176),setTimeout(()=>{const _0x1377e8=_0x138a88;liff[_0x1377e8(0x182)]();},0x7d0);});},_0x4a877b=>{const _0x44ab2c=_0x2a94a4;document[_0x44ab2c(0x168)](_0x44ab2c(0x16a))[_0x44ab2c(0x179)]=_0x44ab2c(0x177);},{'enableHighAccuracy':!![]});}catch(_0x4cb0fe){document[_0x2a94a4(0x168)](_0x2a94a4(0x16a))[_0x2a94a4(0x174)]='系統錯誤：'+_0x4cb0fe;}}main();function _0x28a6(){const _0xeb09b8=['2008914307-JOMdlPxS','https://script.google.com/macros/s/AKfycbweyZJrAhuROVhNcVZ0_-PydK-KdMOFnO8jx9RSaSq0MwKaQDNBokTsWRvTNdSJsqZwvw/exec','no-cors','none','GAS_URL','TOKEN','2366380qjGdib','closeWindow','87288ygAIwQ','7fKeUmf','displayName','30352890ddipIZ','getCurrentPosition','latitude','9dZDAfx','52699pxtpyv','stringify','355hWufWe','getProfile','init','login','LIFF_ID','getElementById','11729592cXREEb','status','coords','位置驗證成功，傳送加密資料...','icon','POST','2447601bJiTnq','2030136FtinuI','display','longitude','then','innerText','v9E4kP2wR7zM5nB8xL1qQ6jT3hY9sD4fG7kH2mN5bV8cX1zQ3w','<h2>✅\x20簽到已完成</h2>','❌\x20權限錯誤：請開啟\x20GPS\x20定位','isLoggedIn','innerHTML','userId'];_0x28a6=function(){return _0xeb09b8;};return _0x28a6();}
+// 核心設定
+const CONFIG = {
+    LIFF_ID: '2008914307-JOMdlPxS',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbweyZJrAhuROVhNcVZ0_-PydK-KdMOFnO8jx9RSaSq0MwKaQDNBokTsWRvTNdSJsqZwvw/exec',
+    // 50碼複雜Token
+    TOKEN: 'v9E4kP2wR7zM5nB8xL1qQ6jT3hY9sD4fG7kH2mN5bV8cX1zQ3w' 
+};
+
+async function main() {
+    try {
+        await liff.init({ liffId: CONFIG.LIFF_ID });
+        if (!liff.isLoggedIn()) { liff.login(); return; }
+
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const profile = await liff.getProfile();
+            document.getElementById('status').innerText = "位置驗證成功，傳送加密資料...";
+
+            fetch(CONFIG.GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    token: CONFIG.TOKEN, // 送出50碼Token
+                    userId: profile.userId,
+                    userName: profile.displayName,
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude
+                })
+            }).then(() => {
+                document.getElementById('icon').style.display = 'none';
+                document.getElementById('status').innerHTML = "<h2>✅ 簽到已完成</h2>";
+                setTimeout(() => { liff.closeWindow(); }, 2000);
+            });
+        }, (err) => {
+            document.getElementById('status').innerHTML = "❌ 權限錯誤：請開啟 GPS 定位";
+        }, { enableHighAccuracy: true });
+    } catch (err) {
+        document.getElementById('status').innerText = "系統錯誤：" + err;
+    }
+}
+
+main();
