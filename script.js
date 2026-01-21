@@ -1,5 +1,5 @@
 const LIFF_ID = '2008914307-JOMdlPxS';
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzbOTFjKZm6wdEf-YR1iDOsQj5yzQvTsKugEN2AvmZnPUJYMKcw9Hn8ROOAXmwq3ufBSg/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwyKwyLibH6MaRtCw1QhTenEC8vmvNkalmyjP1shdF2MmfrvZ8Hzl9-9DMPqs66VBrt9A/exec';
 
 // === 座標設定 ===
 const OFFICE_LAT = 23.107699;
