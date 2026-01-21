@@ -3,83 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRC6998簽到系統</title>
+    <title>FRC6998 簽到系統</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        body { font-family: -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f7f6; text-align: center; padding: 20px; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #00B900; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #status { margin-top: 20px; color: #333; font-weight: 500; line-height: 1.5; }
-        .error { color: #d93025; font-weight: bold; }
-        .success { color: #27ae60; font-weight: bold; }
-        .warning { color: #e67e22; font-weight: bold; }body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    /* 漸層背景增加質感 */
-    background: radial-gradient(circle at center, #1e272e 0%, #050505 100%);
-    color: #ffffff;
-    text-align: center;
-    padding: 20px;
-}
+        :root {
+            --primary-color: #00E676;
+            --error-color: #ff5252;
+            --warning-color: #ffd740;
+            --bg-gradient: linear-gradient(135deg, #1e272e 0%, #050505 100%);
+        }
 
-/* 載入動畫優化 */
-.loader {
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top: 3px solid #00E676; /* 亮綠色 */
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
-}
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            overflow: hidden;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        /* 玻璃外框卡片 */
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 85%;
+            max-width: 320px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
 
-#status {
-    margin-top: 25px;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
-    max-width: 80%;
-}
+        /* 雙環科技感載入動畫 */
+        .loader-wrapper {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
 
-/* 狀態顏色微調 */
-.error { color: #ff5252; text-shadow: 0 0 10px rgba(255, 82, 82, 0.3); }
-.success { color: #00E676; text-shadow: 0 0 10px rgba(0, 230, 118, 0.3); }
-.warning { color: #ffd740; }
         .loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #27ae60;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  margin: 15px auto;
-}
+            position: absolute;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+        .loader-inner {
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 2px solid transparent;
+            border-top: 2px solid rgba(0, 230, 118, 0.3);
+            border-radius: 50%;
+            animation: spin 2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 文字樣式 */
+        #status {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+
+        /* 狀態色彩優化 */
+        .error { color: var(--error-color) !important; text-shadow: 0 0 12px rgba(255, 82, 82, 0.4); }
+        .success { color: var(--primary-color) !important; text-shadow: 0 0 12px rgba(0, 230, 118, 0.4); }
+        .warning { color: var(--warning-color) !important; }
+
+        /* 簡單的浮現動畫 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <div id="icon" class="loader"></div>
-    <div id="status">正在驗證您的位置與時間...</div>
+    <div class="container fade-in">
+        <div class="loader-wrapper" id="loader-container">
+            <div id="icon" class="loader"></div>
+            <div class="loader-inner"></div>
+        </div>
+        <div id="status">正在驗證您的位置與時間...</div>
+    </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
