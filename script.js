@@ -1,12 +1,147 @@
+// === 設定區 ===
 const LIFF_ID = '2008914307-JOMdlPxS';
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwNRKXJBdpQCK1EEkBvkGNLr8zDGnKESOkVyEXTpP4JVY5tPbwkpzj3oejSHasTJMC7jg/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxv_c6BlfzbApgYkvnvinMAAUOkw1YHVKSNKyP5KTnGONCcWcbA2-KBMLX6E05KdauRzg/exec';
 
-// === 座標設定 ===
-const OFFICE_LAT = 23.107699;
-const OFFICE_LNG = 120.292136;
-const ALLOWED_DISTANCE = 0.1; // 100公尺
+const OFFICE_LAT = 23.107699; // 工作室緯度
+const OFFICE_LNG = 120.292136; // 工作室經度
+const ALLOWED_DISTANCE = 0.1; // 允許距離 (公里)，0.1 = 100公尺
 
+// === 1. 初始化與主流程 ===
+async function main() {
+    const statusEl = document.getElementById('status');
+    const iconEl = document.getElementById('icon');
 
+    try {
+        // LIFF 初始化
+        await liff.init({ liffId: LIFF_ID });
+        
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+        }
+
+        // 時間檢查
+        const now = new Date();
+        const hour = now.getHours();
+        const min = now.getMinutes();
+        const totalMinutes = hour * 60 + min;
+        let timeStatusHtml = "";
+
+        // 判定時段 (與後端邏輯一致)
+        if (totalMinutes >= 7 * 60 && totalMinutes <= 12 * 60) {
+            const isLate = totalMinutes > 9 * 60 + 5;
+            timeStatusHtml = isLate ? 
+                "<span style='color:#e67e22;'>⚠️ 上午：遲到狀態</span>" : 
+                "<span style='color:#27ae60;'>☀️ 上午：出席狀態</span>";
+        } else if (totalMinutes > 12 * 60 && totalMinutes <= 23 * 60 + 59) {
+            const isLate = totalMinutes > 13 * 60 + 35;
+            timeStatusHtml = isLate ? 
+                "<span style='color:#e67e22;'>⚠️ 下午：遲到狀態</span>" : 
+                "<span style='color:#27ae60;'>☕ 下午：出席狀態</span>";
+        } else {
+            iconEl.style.display = 'none';
+            statusEl.innerHTML = "<b style='color:#e74c3c;'>❌ 非簽到時段</b><br>目前不在開放時間內";
+            return;
+        }
+
+        // 地理位置檢查
+        statusEl.innerHTML = "正在獲取 GPS 位置...";
+        
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const distance = getDistance(
+                    position.coords.latitude, 
+                    position.coords.longitude, 
+                    OFFICE_LAT, 
+                    OFFICE_LNG
+                );
+
+                if (distance <= ALLOWED_DISTANCE) {
+                    statusEl.innerHTML = `位置驗證成功<br>${timeStatusHtml}<br><br><b>正在連線中...</b>`;
+                    submitCheckIn(); // 執行簽到
+                } else {
+                    iconEl.style.display = 'none';
+                    statusEl.innerHTML = `
+                        <b style='color:#e74c3c;'>❌ 區域限制</b><br>
+                        您目前不在工作室範圍內<br>
+                        <small>(距離: ${(distance * 1000).toFixed(0)}公尺)</small>
+                    `;
+                }
+            }, 
+            (err) => {
+                iconEl.style.display = 'none';
+                statusEl.innerHTML = "<b style='color:#e74c3c;'>❌ 無法取得位置</b><br>請開啟 GPS 權限並重新整理";
+            }, 
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+
+    } catch (err) {
+        statusEl.innerText = "初始化失敗: " + err;
+    }
+}
+
+// === 2. 傳送資料到 GAS ===
+async function submitCheckIn() {
+    const statusEl = document.getElementById('status');
+    const iconEl = document.getElementById('icon');
+    
+    try {
+        const profile = await liff.getProfile();
+        const token = generateToken();
+
+        // 顯示排隊提示
+        statusEl.innerHTML += "<div class='loader'></div><p style='font-size:0.8em; color:gray;'>伺服器處理中，請稍候...</p>";
+
+        // 設定 25 秒超時限制 (因為 GAS 鎖定最長等待 30 秒)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors', // 使用 no-cors 模式發送
+            body: JSON.stringify({
+                userId: profile.userId,
+                userName: profile.displayName,
+                token: token
+            }),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        // 成功顯示
+        iconEl.style.display = 'none';
+        statusEl.innerHTML = `
+            <h2 style="color: #27ae60;">✅ 簽到完成</h2>
+            <p>系統已接收您的請求</p>
+            <p style="font-size:0.9em; color:#7f8c8d;">視窗即將自動關閉</p>
+        `;
+
+        // 成功後停留 2.5 秒關閉
+        setTimeout(() => { liff.closeWindow(); }, 2500);
+
+    } catch (err) {
+        iconEl.style.display = 'none';
+        if (err.name === 'AbortError') {
+            statusEl.innerHTML = "<b style='color:#e74c3c;'>❌ 伺服器回應逾時</b><br>可能因同時簽到人數過多，請稍後重試。";
+        } else {
+            statusEl.innerHTML = "<b style='color:#e74c3c;'>❌ 傳送失敗</b><br>網路連線異常，請檢查網路。";
+        }
+    }
+}
+
+// === 輔助函式：計算距離 ===
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // 地球半徑 (km)
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+// === 輔助函式：產生驗證 Token ===
 function generateToken() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const makeRandom = (len) => Array.from({ length: len }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
@@ -20,74 +155,5 @@ function generateToken() {
     return makeRandom(20) + timeStr + makeRandom(24);
 }
 
-function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-}
-
-async function main() {
-    try {
-        await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-            liff.login();
-            return;
-        }
-
-        const now = new Date();
-        const totalMinutes = now.getHours() * 60 + now.getMinutes();
-        let timeStatus = "";
-
-        if (totalMinutes >= 7 * 60 && totalMinutes <= 12 * 60) {
-            timeStatus = (totalMinutes <= 9 * 60 + 5) ? "<span class='success'>☀️ 上午：出席狀態</span>" : "<span class='warning'>⚠️ 上午：遲到狀態</span>";
-        } else if (totalMinutes > 12 * 60 && totalMinutes <= 23 * 60 + 59) {
-            timeStatus = (totalMinutes <= 13 * 60 + 35) ? "<span class='success'>☕ 下午：出席狀態</span>" : "<span class='warning'>⚠️ 下午：遲到狀態</span>";
-        } else {
-            document.getElementById('icon').style.display = 'none';
-            document.getElementById('status').innerHTML = "<span class='error'>❌ 非簽到時段</span><br>目前時間不在開放範圍內";
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const distance = getDistance(position.coords.latitude, position.coords.longitude, OFFICE_LAT, OFFICE_LNG);
-            if (distance <= ALLOWED_DISTANCE) {
-                document.getElementById('status').innerHTML = `位置驗證成功...<br>${timeStatus}`;
-                submitCheckIn();
-            } else {
-                document.getElementById('icon').style.display = 'none';
-                document.getElementById('status').innerHTML = `<span class="error">❌ 區域限制</span><br>您目前不在工作室範圍內`;
-            }
-        }, (err) => {
-            document.getElementById('icon').style.display = 'none';
-            document.getElementById('status').innerHTML = `<span class="error">❌ 無法取得位置</span><br>請開啟 GPS 權限`;
-        }, { enableHighAccuracy: true });
-
-    } catch (err) {
-        document.getElementById('status').innerText = "初始化失敗: " + err;
-    }
-}
-
-async function submitCheckIn() {
-    const profile = await liff.getProfile();
-    const token = generateToken();
-
-    fetch(GAS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify({
-            userId: profile.userId,
-            userName: profile.displayName,
-            token: token
-        })
-    }).then(() => {
-        document.getElementById('icon').style.display = 'none';
-        document.getElementById('status').innerHTML = "<h2 style='color: #00B900;'>✅ 簽到資料已傳送</h2><p>系統將自動記錄您的出席狀態</p>";
-        setTimeout(() => { liff.closeWindow(); }, 1800);
-    });
-}
-
+// 啟動程式
 main();
