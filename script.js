@@ -1,1 +1,93 @@
-function _0x1e59(_0x334a9b,_0x283968){_0x334a9b=_0x334a9b-0x12b;var _0x43a152=_0x43a1();var _0x1e5962=_0x43a152[_0x334a9b];return _0x1e5962;}function _0x43a1(){var _0x10ab45=['3898305sENRCX','6Cbouvk','replace','3448060NTJUTV','1264975cVoInN','14662STrFxc','134MVyjBP','8864383JpoJaZ','10pxQAox','|||Math|span|document|getElementById|class|const|status||liff||style||innerHTML|function|return||PI|180|sin|icon||||display||||none|br|padStart|async|if|error|LIFF_ID|GAS_URL|OFFICE_LAT|OFFICE_LNG|ALLOWED_DISTANCE|generateToken|new|Date|getHours|getDistance|cos|sqrt|main|await|void|720|success|warning|coords|submitCheckIn|userId|h2|2008914307|JOMdlPxS|https|script|google|com|macros|AKfycbzPdpT6O_q5K4kKrrElCFjqodauVxBMlNIIqqcv0LABNFYKF5jTLDKTQW98yU1VRQwXFQ|exec|23|107699|120|292136|ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789|Array|from|length|charAt|floor|62|random|join|getMonth|getDate|24|6371|atan2|try|init|liffId|isLoggedIn|login|60|getMinutes|let|420|545|else|1439|815|navigator|geolocation|getCurrentPosition|latitude|longitude|GPS|enableHighAccuracy|catch|innerText|getProfile|fetch|method|POST|mode|no|cors|body|JSON|stringify|userName|displayName|token|then|color|00B900|setTimeout||closeWindow|1800','908127XESwBr','split','fromCharCode','\x5cw+','toString','24aIxMoI','7663264TTYqew'];_0x43a1=function(){return _0x10ab45;};return _0x43a1();}var _0x11fb01=_0x1e59;(function(_0x120fbf,_0x4b022a){var _0x480115=_0x1e59,_0x145b8e=_0x120fbf();while(!![]){try{var _0x17429a=parseInt(_0x480115(0x135))/0x1*(parseInt(_0x480115(0x136))/0x2)+-parseInt(_0x480115(0x130))/0x3+parseInt(_0x480115(0x133))/0x4+parseInt(_0x480115(0x134))/0x5+parseInt(_0x480115(0x131))/0x6*(parseInt(_0x480115(0x12f))/0x7)+parseInt(_0x480115(0x12e))/0x8*(-parseInt(_0x480115(0x13a))/0x9)+parseInt(_0x480115(0x138))/0xa*(-parseInt(_0x480115(0x137))/0xb);if(_0x17429a===_0x4b022a)break;else _0x145b8e['push'](_0x145b8e['shift']());}catch(_0x257f96){_0x145b8e['push'](_0x145b8e['shift']());}}}(_0x43a1,0xbf6f7),eval(function(_0x173114,_0x1c42a3,_0x5db6a8,_0x53f201,_0x354701,_0x25321f){var _0x1f8a02=_0x1e59;_0x354701=function(_0x35798d){var _0x455295=_0x1e59;return(_0x35798d<_0x1c42a3?'':_0x354701(parseInt(_0x35798d/_0x1c42a3)))+((_0x35798d=_0x35798d%_0x1c42a3)>0x23?String[_0x455295(0x12b)](_0x35798d+0x1d):_0x35798d[_0x455295(0x12d)](0x24));};if(!''[_0x1f8a02(0x132)](/^/,String)){while(_0x5db6a8--)_0x25321f[_0x354701(_0x5db6a8)]=_0x53f201[_0x5db6a8]||_0x354701(_0x5db6a8);_0x53f201=[function(_0xf0956d){return _0x25321f[_0xf0956d];}],_0x354701=function(){var _0x1aecb7=_0x1f8a02;return _0x1aecb7(0x12c);},_0x5db6a8=0x1;};while(_0x5db6a8--)if(_0x53f201[_0x5db6a8])_0x173114=_0x173114[_0x1f8a02(0x132)](new RegExp('\x5cb'+_0x354701(_0x5db6a8)+'\x5cb','g'),_0x53f201[_0x5db6a8]);return _0x173114;}('8\x20A=\x22W-X\x22,B=\x22Y://Z.10.11/12/s/13/14\x22,C=15.16,D=17.18,E=.1;g\x20F(){8\x20t=\x2219\x22,e=e=>1a.1b({1c:e},()=>t.1d(3.1e(1f*3.1g()))).1h(\x22\x22),n=G\x20H,s=(n.1i()+1+\x22\x22).w(2,\x220\x22),a=(n.1j()+\x22\x22).w(2,\x220\x22),o=(n.I()+\x22\x22).w(2,\x220\x22),c=s+a+o;h\x20e(20)+c+e(1k)}g\x20J(t,e,n,s){8\x20a=1l,o=(n-t)*3.j/k,c=(s-e)*3.j/k,i=3.l(o/2)*3.l(o/2)+3.K(t*3.j/k)*3.K(n*3.j/k)*3.l(c/2)*3.l(c/2),r=2*3.1m(3.L(i),3.L(1-i));h\x20a*r}x\x20g\x20M(){1n{y(N\x20b.1o({1p:A}),!b.1q())h\x20O\x20b.1r();8\x20t=G\x20H,e=1s*t.I()+t.1t();1u\x20n=\x22\x22;y(e>=1v&&e<=P)n=e<=1w?\x22<4\x207=\x27Q\x27>☀️\x20上午：出席狀態</4>\x22:\x22<4\x207=\x27R\x27>⚠️\x20上午：遲到狀態</4>\x22;1x{y(!(e>P&&e<=1y))h\x205.6(\x22m\x22).d.q=\x22u\x22,O(5.6(\x229\x22).f=\x22<4\x207=\x27z\x27>❌\x20非簽到時段</4><v>目前時間不在開放範圍內\x22);n=e<=1z?\x22<4\x207=\x27Q\x27>☕\x20下午：出席狀態</4>\x22:\x22<4\x207=\x27R\x27>⚠️\x20下午：遲到狀態</4>\x22}1A.1B.1C(x\x20t=>{8\x20e=J(t.S.1D,t.S.1E,C,D);e<=E?(5.6(\x229\x22).f=`位置驗證成功...<v>${n}`,T()):(5.6(\x22m\x22).d.q=\x22u\x22,5.6(\x229\x22).f=\x27<4\x207=\x22z\x22>❌\x20區域限制</4><v>您目前不在工作室範圍內\x27)},t=>{5.6(\x22m\x22).d.q=\x22u\x22,5.6(\x229\x22).f=\x27<4\x207=\x22z\x22>❌\x20無法取得位置</4><v>請開啟\x201F\x20權限\x27},{1G:!0})}1H(t){5.6(\x229\x22).1I=\x22初始化失敗:\x20\x22+t}}x\x20g\x20T(){8\x20t=N\x20b.1J(),e=F();1K(B,{1L:\x221M\x22,1N:\x221O-1P\x22,1Q:1R.1S({U:t.U,1T:t.1U,1V:e})}).1W(()=>{5.6(\x22m\x22).d.q=\x22u\x22,5.6(\x229\x22).f=\x22<V\x20d=\x271X:\x20#1Y;\x27>✅\x20簽到資料已傳送</V><p>系統將自動記錄您的出席狀態</p>\x22,1Z(()=>{b.21()},22)})}M();',0x3e,0x7f,_0x11fb01(0x139)[_0x11fb01(0x13b)]('|'),0x0,{})));
+const LIFF_ID = '2008914307-JOMdlPxS';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzPdpT6O_q5K4kKrrElCFjqodauVxBMlNIIqqcv0LABNFYKF5jTLDKTQW98yU1VRQwXFQ/exec';
+
+// === 座標設定 ===
+const OFFICE_LAT = 23.107699;
+const OFFICE_LNG = 120.292136;
+const ALLOWED_DISTANCE = 0.1; // 100公尺
+
+
+function generateToken() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const makeRandom = (len) => Array.from({ length: len }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    
+    const now = new Date();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const timeStr = mm + dd + hh;
+
+    return makeRandom(20) + timeStr + makeRandom(24);
+}
+
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+async function main() {
+    try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+        }
+
+        const now = new Date();
+        const totalMinutes = now.getHours() * 60 + now.getMinutes();
+        let timeStatus = "";
+
+        if (totalMinutes >= 7 * 60 && totalMinutes <= 12 * 60) {
+            timeStatus = (totalMinutes <= 9 * 60 + 5) ? "<span class='success'>☀️ 上午：出席狀態</span>" : "<span class='warning'>⚠️ 上午：遲到狀態</span>";
+        } else if (totalMinutes > 12 * 60 && totalMinutes <= 23 * 60 + 59) {
+            timeStatus = (totalMinutes <= 13 * 60 + 35) ? "<span class='success'>☕ 下午：出席狀態</span>" : "<span class='warning'>⚠️ 下午：遲到狀態</span>";
+        } else {
+            document.getElementById('icon').style.display = 'none';
+            document.getElementById('status').innerHTML = "<span class='error'>❌ 非簽到時段</span><br>目前時間不在開放範圍內";
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const distance = getDistance(position.coords.latitude, position.coords.longitude, OFFICE_LAT, OFFICE_LNG);
+            if (distance <= ALLOWED_DISTANCE) {
+                document.getElementById('status').innerHTML = `位置驗證成功...<br>${timeStatus}`;
+                submitCheckIn();
+            } else {
+                document.getElementById('icon').style.display = 'none';
+                document.getElementById('status').innerHTML = `<span class="error">❌ 區域限制</span><br>您目前不在工作室範圍內`;
+            }
+        }, (err) => {
+            document.getElementById('icon').style.display = 'none';
+            document.getElementById('status').innerHTML = `<span class="error">❌ 無法取得位置</span><br>請開啟 GPS 權限`;
+        }, { enableHighAccuracy: true });
+
+    } catch (err) {
+        document.getElementById('status').innerText = "初始化失敗: " + err;
+    }
+}
+
+async function submitCheckIn() {
+    const profile = await liff.getProfile();
+    const token = generateToken();
+
+    fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({
+            userId: profile.userId,
+            userName: profile.displayName,
+            token: token
+        })
+    }).then(() => {
+        document.getElementById('icon').style.display = 'none';
+        document.getElementById('status').innerHTML = "<h2 style='color: #00B900;'>✅ 簽到資料已傳送</h2><p>系統將自動記錄您的出席狀態</p>";
+        setTimeout(() => { liff.closeWindow(); }, 1800);
+    });
+}
+
+main();
