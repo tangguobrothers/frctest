@@ -83,116 +83,15 @@
 <body>
 
     <div class="card">
-        <h2>FRC6998 簽到</h2>
+        <h2>FRC6998 簽到系統(GPS重新定位版)</h2>
         <div id="icon" class="loader"></div>
         <div id="status">正在驗證您的位置與時間...</div>
         <button id="retryBtn" class="btn-retry" onclick="location.reload()">重新整理定位</button>
     </div>
 
     <script>
-    const LIFF_ID = '2008914307-JOMdlPxS';
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwG7_dYG9nq_oVg8Xq8Exte-rBxgcl_ZykvUQ4YgiZQL0RF48bYJLiol21KjrxwcjPffw/exec';
-
-    const OFFICE_LAT = 23.107699;
-    const OFFICE_LNG = 120.292136;
-    const ALLOWED_DISTANCE = 0.1; // 100公尺
-
-    function generateToken() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const makeRandom = (len) => Array.from({ length: len }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
-        const now = new Date();
-        const timeStr = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + String(now.getHours()).padStart(2, '0');
-        return makeRandom(20) + timeStr + makeRandom(24);
-    }
-
-    function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-    }
-
-    function showError(msg, distance = null) {
-        document.getElementById('icon').style.display = 'none';
-        let content = `<span class="error">${msg}</span>`;
-        
-        // 如果有距離資訊，顯示出來
-        if (distance !== null) {
-            const meters = Math.round(distance * 1000);
-            content += `<br><span class="distance-info">目前與工作室距離：${meters} 公尺</span>`;
-        }
-        
-        document.getElementById('status').innerHTML = content;
-        document.getElementById('retryBtn').style.display = 'block';
-    }
-
-    async function main() {
-        try {
-            await liff.init({ liffId: LIFF_ID });
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return;
-            }
-
-            const now = new Date();
-            const totalMinutes = now.getHours() * 60 + now.getMinutes();
-            let timeStatus = "";
-
-            // 時間判斷邏輯
-            if (totalMinutes >= 7 * 60 && totalMinutes <= 12 * 60) {
-                timeStatus = (totalMinutes <= 9 * 60 + 5) ? "<span class='success'>☀️ 上午：出席狀態</span>" : "<span class='warning'>⚠️ 上午：遲到狀態</span>";
-            } else if (totalMinutes > 12 * 60 && totalMinutes <= 23 * 60 + 59) {
-                timeStatus = (totalMinutes <= 13 * 60 + 35) ? "<span class='success'>☕ 下午：出席狀態</span>" : "<span class='warning'>⚠️ 下午：遲到狀態</span>";
-            } else {
-                showError("❌ 非簽到時段<br>目前時間不在開放範圍內");
-                document.getElementById('retryBtn').style.display = 'none';
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                const distance = getDistance(position.coords.latitude, position.coords.longitude, OFFICE_LAT, OFFICE_LNG);
-                
-                if (distance <= ALLOWED_DISTANCE) {
-                    document.getElementById('status').innerHTML = `位置驗證成功...<br>${timeStatus}`;
-                    submitCheckIn();
-                } else {
-                    showError("❌ 區域限制<br>您目前不在工作室範圍內", distance);
-                }
-            }, (err) => {
-                showError("❌ 無法取得位置<br>請檢查手機 GPS 權限");
-            }, { enableHighAccuracy: true, timeout: 10000 });
-
-        } catch (err) {
-            showError("初始化失敗: " + err);
-        }
-    }
-
-    async function submitCheckIn() {
-        try {
-            const profile = await liff.getProfile();
-            const token = generateToken();
-
-            fetch(GAS_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({
-                    userId: profile.userId,
-                    userName: profile.displayName,
-                    token: token
-                })
-            }).then(() => {
-                document.getElementById('icon').style.display = 'none';
-                document.getElementById('status').innerHTML = "<h2 style='color: #00B900;'>✅ 簽到成功</h2><p>系統已記錄您的出席</p>";
-                setTimeout(() => { liff.closeWindow(); }, 2200);
-            });
-        } catch (e) {
-            showError("傳送失敗，請重新整理");
-        }
-    }
-
-    main();
+    var _0x3b6442=_0x118c;function _0x118c(_0x4334bd,_0x4056b1){_0x4334bd=_0x4334bd-0x143;var _0x48a57f=_0x48a5();var _0x118c37=_0x48a57f[_0x4334bd];return _0x118c37;}function _0x48a5(){var _0x15a042=['replace','6384680jfypJu','9648166BeEyda','2081994ZHPotW','5ZxYSmJ','738yoRdGZ','2719296rfgIvt','6pbvxTt','5\x20y=\x2210-11\x22,z=\x2212://13.14.15/16/s/17-18/19\x22,A=23.1a,B=1b.1c,C=.1;b\x20D(){5\x20t=\x221d\x22,n=n=>1e.1f({1g:n},()=>t.1h(3.1i(1j*3.1k()))).1l(\x22\x22),e=E\x20F,s=(e.1m()+1+\x22\x22).q(2,\x220\x22)+(e.1n()+\x22\x22).q(2,\x220\x22)+(e.G()+\x22\x22).q(2,\x220\x22);g\x20n(20)+s+n(24)}b\x20H(t,n,e,s){5\x20o=1o,a=(e-t)*3.h/j,r=(s-n)*3.h/j,i=3.k(a/2)*3.k(a/2)+3.I(t*3.h/j)*3.I(e*3.h/j)*3.k(r/2)*3.k(r/2);g\x20o*(2*3.1p(3.J(i),3.J(1-i)))}b\x208(t,n=K){6.7(\x22L\x22).c.l=\x22u\x22;M\x20e=`<4\x209=\x221q\x22>${t}</4>`;m(K!==n){5\x20t=3.1r(1s*n);e+=`<d><4\x209=\x221t-1u\x22>目前與工作室距離：${t}公尺</4>`}6.7(\x22v\x22).w=e,6.7(\x22N\x22).c.l=\x221v\x22}x\x20b\x20O(){P{m(Q\x20f.1w({1x:y}),!f.1y())g\x20R\x20f.1z();5\x20t=E\x20F,n=1A*t.G()+t.1B();M\x20e=\x22\x22;m(n>=1C&&n<=S)e=n<=1D?\x22<4\x209=\x27T\x27>☀️\x20上午：出席狀態</4>\x22:\x22<4\x209=\x27U\x27>⚠️\x20上午：遲到狀態</4>\x22;1E{m(!(n>S&&n<=1F))g\x208(\x22❌\x20非簽到時段<d>目前時間不在開放範圍內\x22),R(6.7(\x22N\x22).c.l=\x22u\x22);e=n<=1G?\x22<4\x209=\x27T\x27>☕\x20下午：出席狀態</4>\x22:\x22<4\x209=\x27U\x27>⚠️\x20下午：遲到狀態</4>\x22}1H.1I.1J(x\x20t=>{5\x20n=H(t.V.1K,t.V.1L,A,B);n<=C?(6.7(\x22v\x22).w=`位置驗證成功...<d>${e}`,W()):8(\x22❌\x20區域限制<d>您目前不在工作室範圍內\x22,n)},t=>{8(\x22❌\x20無法取得位置<d>請檢查手機\x201M\x20權限\x22)},{1N:!0,1O:1P})}X(t){8(\x22初始化失敗:\x20\x22+t)}}x\x20b\x20W(){P{5\x20t=Q\x20f.1Q(),n=D();1R(z,{1S:\x221T\x22,1U:\x221V-1W\x22,1X:1Y.1Z({Y:t.Y,21:t.22,25:n})}).26(()=>{6.7(\x22L\x22).c.l=\x22u\x22,6.7(\x22v\x22).w=\x22<Z\x20c=\x2727:\x20#28;\x27>✅\x20簽到成功</Z><p>系統已記錄您的出席</p>\x22,29(()=>{f.2a()},2b)})}X(t){8(\x22傳送失敗，請重新整理\x22)}}O();','7GMGqcQ','\x5cw+','678662NKgJkL','444597NgsDnX','55310NZjnYt','toString','split'];_0x48a5=function(){return _0x15a042;};return _0x48a5();}(function(_0x2363d4,_0x19577c){var _0x5322ae=_0x118c,_0x29e54c=_0x2363d4();while(!![]){try{var _0x3d958b=parseInt(_0x5322ae(0x14c))/0x1+-parseInt(_0x5322ae(0x148))/0x2*(-parseInt(_0x5322ae(0x14d))/0x3)+-parseInt(_0x5322ae(0x147))/0x4+parseInt(_0x5322ae(0x145))/0x5*(-parseInt(_0x5322ae(0x144))/0x6)+-parseInt(_0x5322ae(0x14a))/0x7*(parseInt(_0x5322ae(0x152))/0x8)+-parseInt(_0x5322ae(0x146))/0x9*(-parseInt(_0x5322ae(0x14e))/0xa)+parseInt(_0x5322ae(0x143))/0xb;if(_0x3d958b===_0x19577c)break;else _0x29e54c['push'](_0x29e54c['shift']());}catch(_0x20a6b9){_0x29e54c['push'](_0x29e54c['shift']());}}}(_0x48a5,0x99907),eval(function(_0x1f9c8a,_0x27f984,_0x2dca4c,_0x3481f6,_0x840451,_0x14febb){var _0x508873=_0x118c;_0x840451=function(_0x18e5d3){var _0x569918=_0x118c;return(_0x18e5d3<_0x27f984?'':_0x840451(parseInt(_0x18e5d3/_0x27f984)))+((_0x18e5d3=_0x18e5d3%_0x27f984)>0x23?String['fromCharCode'](_0x18e5d3+0x1d):_0x18e5d3[_0x569918(0x14f)](0x24));};if(!''['replace'](/^/,String)){while(_0x2dca4c--)_0x14febb[_0x840451(_0x2dca4c)]=_0x3481f6[_0x2dca4c]||_0x840451(_0x2dca4c);_0x3481f6=[function(_0x28dc8a){return _0x14febb[_0x28dc8a];}],_0x840451=function(){var _0x4e1e21=_0x118c;return _0x4e1e21(0x14b);},_0x2dca4c=0x1;};while(_0x2dca4c--)if(_0x3481f6[_0x2dca4c])_0x1f9c8a=_0x1f9c8a[_0x508873(0x151)](new RegExp('\x5cb'+_0x840451(_0x2dca4c)+'\x5cb','g'),_0x3481f6[_0x2dca4c]);return _0x1f9c8a;}(_0x3b6442(0x149),0x3e,0x88,'|||Math|span|const|document|getElementById|showError|class||function|style|br||liff|return|PI||180|sin|display|if||||padStart||||none|status|innerHTML|async|LIFF_ID|GAS_URL|OFFICE_LAT|OFFICE_LNG|ALLOWED_DISTANCE|generateToken|new|Date|getHours|getDistance|cos|sqrt|null|icon|let|retryBtn|main|try|await|void|720|success|warning|coords|submitCheckIn|catch|userId|h2|2008914307|JOMdlPxS|https|script|google|com|macros|AKfycbwG7_dYG9nq_oVg8Xq8Exte|rBxgcl_ZykvUQ4YgiZQL0RF48bYJLiol21KjrxwcjPffw|exec|107699|120|292136|ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789|Array|from|length|charAt|floor|62|random|join|getMonth|getDate|6371|atan2|error|round|1e3|distance|info|block|init|liffId|isLoggedIn|login|60|getMinutes|420|545|else|1439|815|navigator|geolocation|getCurrentPosition|latitude|longitude|GPS|enableHighAccuracy|timeout|1e4|getProfile|fetch|method|POST|mode|no|cors|body|JSON|stringify||userName|displayName|||token|then|color|00B900|setTimeout|closeWindow|2200'[_0x3b6442(0x150)]('|'),0x0,{})));
     </script>
 </body>
 </html>
+
