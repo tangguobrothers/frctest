@@ -1,8 +1,15 @@
 import { neon } from '@neondatabase/serverless';
 
 export default async function handler(req, res) {
-  // 只允許 POST 請求
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' });
+
+  // 檢查 req.body 是否已經是物件，如果不是才解析
+  const data = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  const { userId, userName, type, token } = data;
+
+  if (!userId || !type) {
+    return res.status(400).send("Bad Request: Missing required fields");
+  }
 
   const sql = neon(process.env.DATABASE_URL);
   const { userId, userName, type, token } = JSON.parse(req.body);
