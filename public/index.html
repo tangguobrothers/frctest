@@ -100,15 +100,16 @@
 async function submitData(type) {
     const token = "v3-" + btoa(Date.now()).substring(0,10);
     try {
-        // 修改這裡：指向 Vercel 的 Serverless Function
         const response = await fetch('/api/checkin', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json' // 務必包含這行，否則後端會解析錯誤
+            },
             body: JSON.stringify({ 
                 userId: userProfile.userId, 
                 userName: userProfile.displayName, 
                 type: type, 
-                token: token 
+                token: "v3-" + btoa(Date.now()).substring(0,10)
             })
         });
         const result = await response.text();
