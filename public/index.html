@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FRC6998 簽到系統</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        :root { --primary: #00B900; --dark: #2c3e50; }
+        body { font-family: -apple-system, sans-serif; background: #f0f2f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { background: white; width: 85%; max-width: 380px; padding: 2.5rem 1.5rem; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        .btn-group { display: grid; gap: 1rem; margin-top: 1.5rem; }
+        .btn { border: none; padding: 1.2rem; border-radius: 16px; font-size: 1.1rem; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-in { background: var(--primary); }
+        .btn-out { background: var(--dark); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        #statusBox { margin-top: 1.5rem; padding: 1rem; border-radius: 12px; display: none; font-size: 0.95rem; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h2 id="title">FRC6998  123</h2>
+    <p id="subTitle" style="color:#7f8c8d; font-size:0.9rem;">載入中，請稍候...</p>
+
+    <div class="btn-group">
+        <button class="btn btn-in" id="btnIn" onclick="startProcess('IN')" disabled>📍 簽到</button>
+        <button class="btn btn-out" id="btnOut" onclick="startProcess('OUT')" disabled>🚪 簽退</button>
+    </div>
+
+    <div id="statusBox"></div>
+</div>
+
+<script>
+    const LIFF_ID = '2008914307-JOMdlPxS';
+    const OFFICE_LAT = 23.107699;
+    const OFFICE_LNG = 120.292136;
+    const ALLOWED_DISTANCE = 0.2;
+
+    let userProfile = null;
+
+    async function main() {
+        try {
+            await liff.init({ liffId: LIFF_ID });
+            
+            if (!liff.isLoggedIn()) {
+                // 如果沒登入，強制跳轉至登入頁面，解決 iframe 拒絕連線問題
+                liff.login({ redirectUri: window.location.href });
+                return;
+            }
+
+            userProfile = await liff.getProfile();
+            document.getElementById('subTitle').innerText = `你好，${userProfile.displayName}`;
+            document.getElementById('btnIn').disabled = false;
+            document.getElementById('btnOut').disabled = false;
+        } catch (err) {
+            document.getElementById('subTitle').innerText = "無法連接至 LINE，請確認開啟權限";
+            console.error(err);
+        }
+    }
+
+    function updateStatus(msg, type) {
+        const box = document.getElementById('statusBox');
+        box.style.display = 'block';
+        box.style.background = type === 'error' ? '#fff5f5' : '#f0fff4';
+        box.style.color = type === 'error' ? '#c53030' : '#2f855a';
+        box.innerHTML = msg;
+    }
+
+    function startProcess(type) {
+        document.getElementById('btnIn').disabled = document.getElementById('btnOut').disabled = true;
+        updateStatus("<div class='loader'></div> 正在確認位置...", "info");
+
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const dist = getDistance(pos.coords.latitude, pos.coords.longitude, OFFICE_LAT, OFFICE_LNG);
+            if (dist > ALLOWED_DISTANCE) {
+                updateStatus(`❌ 超出範圍 (${Math.round(dist*1000)}m)`, "error");
+                document.getElementById('btnIn').disabled = document.getElementById('btnOut').disabled = false;
+                return;
+            }
+            submitData(type);
+        }, (err) => {
+            updateStatus("❌ 定位失敗，請開啟 GPS 權限", "error");
+            document.getElementById('btnIn').disabled = document.getElementById('btnOut').disabled = false;
+        }, { enableHighAccuracy: true });
+    }
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2-lat1)*Math.PI/180;
+        const dLon = (lon2-lon1)*Math.PI/180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+// ... 原本的 HTML 與樣式保持不變 ...
+
+async function submitData(type) {
+    const token = "v3-" + btoa(Date.now()).substring(0,10);
+    try {
+        // 修改這裡：指向 Vercel 的 Serverless Function
+        const response = await fetch('/api/checkin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                userId: userProfile.userId, 
+                userName: userProfile.displayName, 
+                type: type, 
+                token: token 
+            })
+        });
+        const result = await response.text();
+        if (result === "Success") {
+            updateStatus("✅ 紀錄成功！視窗即將關閉", "success");
+            setTimeout(() => liff.closeWindow(), 2000);
+        } else {
+            updateStatus("❌ 錯誤: " + result, "error");
+            document.getElementById('btnIn').disabled = false;
+        }
+    } catch (e) {
+        updateStatus("❌ 系統連線失敗", "error");
+    }
+}
+
+    window.onload = main;
+</script>
+
+</body>
+</html>
